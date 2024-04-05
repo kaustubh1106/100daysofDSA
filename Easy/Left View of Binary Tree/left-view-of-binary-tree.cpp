@@ -129,60 +129,42 @@ struct Node
 
 //Function to return a list containing elements of left view of the binary tree.\
 
-int height(Node* root){
-    if(root==NULL){
-        return 0;
-    }
-    else{
-        int hol = height(root->left);
-        int hor = height(root->right);
-        
-        int ans = max(hol,hor)+1;
-        return ans;
-    }
-}
-
-
-void lefttraversal(Node* root,vector<int> &ans){
-    if(root == NULL){
-        return ;
-    }
-    else if(root->left == NULL && root->right == NULL){
-        ans.push_back(root->data);
-        return ;
-    }
-    else{
-        
-        ans.push_back(root->data);
-        if(root->left){
-            lefttraversal(root->left,ans);
-        }
-        else{
-            lefttraversal(root->right,ans);
-        }
-        
-    }
-}
 vector<int> leftView(Node *root)
 {
    // Your code here
+   map<int,int> nodes;
+   queue<pair<Node *,int>> q;
    vector<int> ans;
-   if(root==NULL) return ans;
    
-   int hol = height(root->left);
-   int hor = height(root->right);
-   
-   if(hol>=hor){
-       lefttraversal(root,ans);
+   if(root == NULL){
+       return ans;
    }
-   else{
-       ans.push_back(root->data);
-       vector<int>ans2;
-       lefttraversal(root,ans2);
-       lefttraversal(root->right,ans);
-       for(int i =0 ;i<ans2.size();i++){
-           ans[i]=ans2[i];
+   
+   q.push(make_pair(root,0));
+   
+   while(q.empty() == false){
+       pair<Node *,int> temp = q.front();
+       q.pop();
+       Node* frontnode= temp.first;
+       int vd = temp.second;
+       if(!nodes[vd] ){
+           if(temp.first->data == 0){
+               nodes[vd]=-1;
+           }
+           else{
+           nodes[vd]=temp.first->data;}
        }
+       if(frontnode->left){
+           q.push(make_pair(frontnode->left,vd+1));
+       }
+       if(frontnode->right){
+           q.push(make_pair(frontnode->right,vd+1));
+       }
+   }
+   
+   for(auto i: nodes){
+       if(i.second == -1){ ans.push_back(0);}
+       else{ans.push_back(i.second);}
    }
    return ans;
 }
