@@ -9,41 +9,44 @@ using namespace std;
 
 class Solution{   
 public:
+    bool checkPalindrome(int i , int j ,string s){
+        if(i>=j){
+            return true;
+        }
+        else{
+            if(s[i]!=s[j]){
+                return false;
+            }
+            return checkPalindrome(i+1,j-1,s);
+        }
+
+    }
     string longestPalindrome(string S){
         // code here 
         int n=S.length();
-        int maxlen=0;
-        string ans="";
-        string res="";
-        int l=0,h=0;
+        int maxlen=1;
+        vector<vector<int>> dp(n+1,vector<int>(n+1,0));
+        int l =0;
+        int r =0;
+        
         for(int i=0;i<n;i++){
-            // for odd substrings
-            l=i;
-            h=i;
-            while(l>=0 && h<S.length() && S[l]==S[h]){
-                ans=S.substr(l,h-l+1);
-                if(ans.length()>maxlen){
-                    maxlen=ans.length();
-                    res=ans;
+            for(int j=i;j<n;j++){
+                //check in dp table
+                if(dp[i][j]==0){
+                    if(checkPalindrome(i,j,S)){
+                        int curr_length = j-i+1;
+                        if(curr_length>maxlen){
+                            maxlen=curr_length;
+                            l=i;
+                            r=j;
+                        }
+                        else{}
+                        dp[i][j]=1;
+                    }
                 }
-                l--;
-                h++;
-            }
-
-            // for even substrings
-            l=i;
-            h=i+1;
-            while(l>=0 && h<S.length() && S[l]==S[h]){
-                ans=S.substr(l,h-l+1);
-                if(ans.length()>maxlen){
-                    maxlen=ans.length();
-                    res=ans;
-                }
-                l--;
-                h++;
             }
         }
-        return res;
+        return S.substr(l,maxlen);
     }
 };
 
